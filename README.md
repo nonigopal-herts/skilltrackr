@@ -1,4 +1,4 @@
-# IT Career Recommender – Full Dockerized MVP
+# IT Career Course Recommender – Full Dockerized MVP
 
 End-to-end project:
 - **Frontend**: React + Vite + Tailwind
