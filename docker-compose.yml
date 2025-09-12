@@ -1,0 +1,88 @@
+#version: "3.9"
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-recdb}
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-recdb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+      parsing:
+        condition: service_started
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-recdb}
+      JWT_SECRET: ${JWT_SECRET:-supersecret_jwt_dev}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      UPLOAD_DIR: ${UPLOAD_DIR:-/data/uploads}
+      PROFILE_PIC_DIR: ${PROFILE_PIC_DIR:-/data/profile_pics}
+      PARSING_URL: ${PARSING_URL:-http://parsing:8001}
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules           # prevent node_modules from being shadowed by bind mount
+      - uploads:${UPLOAD_DIR:-/data/uploads}
+      - profile_pics:${PROFILE_PIC_DIR:-/data/profile_pics}
+    command: ["npm", "run", "dev"]
+
+  parsing:
+    build: ./parsing
+    environment:
+      UPLOAD_DIR: ${UPLOAD_DIR:-/data/uploads}
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./parsing:/app
+      - uploads:${UPLOAD_DIR:-/data/uploads}
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    environment:
+      # Important: browser must reach localhost, not the docker service name
+      VITE_API_URL: http://localhost:4000/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: ["npm", "run", "dev", "--", "--host"]
+
+  pgadmin:
+    image: dpage/pgadmin4:8.10
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmindata:/var/lib/pgadmin
+      - ./ops/pgadmin/servers.json:/pgadmin4/servers.json:ro
+
+
+volumes:
+  dbdata:
+  uploads:
+  profile_pics:
+  pgadmindata:

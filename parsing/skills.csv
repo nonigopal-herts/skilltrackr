@@ -1,0 +1,64 @@
+name,synonyms
+JavaScript,JS|ECMAScript
+TypeScript,TS
+React,React.js|ReactJS
+Next.js,Nextjs
+HTML,HyperText Markup Language
+CSS,Cascading Style Sheets
+Tailwind CSS,Tailwind
+Node.js,Node
+Express,Express.js
+PostgreSQL,Postgres|PSQL
+MySQL,
+MongoDB,Mongoose
+Python,
+Pandas,
+NumPy,
+Scikit-learn,sklearn
+TensorFlow,TF
+PyTorch,
+SQL,Structured Query Language
+Data Visualization,Data Viz|Visualization
+Statistics,Stats
+Git,
+REST,REST API|HTTP API
+GraphQL,
+Docker,
+Kubernetes,K8s
+Linux,
+AWS,Amazon Web Services
+Azure,
+GCP,Google Cloud
+Terraform,
+CI/CD,Continuous Integration|Continuous Delivery
+Bash,
+DSA,Data Structures and Algorithms|Algorithms
+Java,
+Spring Boot,
+C#,
+. NET,.NET|dotnet
+Go,Golang
+Rust,
+Firebase,
+Redux,
+TypeORM,
+Prisma,
+Webpack,
+Vite,
+Jest,
+Cypress,
+Selenium,
+Tableau,
+Power BI,
+Matplotlib,
+Seaborn,
+NLP,Natural Language Processing
+Computer Vision,
+OpenCV,
+FastAPI,
+Django,
+Flask,
+Spark,PySpark
+Hadoop,
+Airflow,
+Kafka,
